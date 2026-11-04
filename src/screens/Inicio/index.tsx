@@ -8,6 +8,7 @@ import { formatearFechaEs } from '../../core/dates'
 import { formatearEuros } from '../../core/money'
 import type { Gasto } from '../../core/types'
 import { useEstadoCicloActual } from '../../hooks/useEstadoCicloActual'
+import { useHucha } from '../../hooks/useHucha'
 import { useRecordatorioBackup } from '../../hooks/useRecordatorioBackup'
 import { GastoFormSheet } from './GastoFormSheet'
 import { RegistrarSalarioFlow } from './RegistrarSalarioFlow'
@@ -18,6 +19,7 @@ interface InicioProps {
 
 export function Inicio({ onIrAAjustes }: InicioProps) {
   const estado = useEstadoCicloActual()
+  const hucha = useHucha()
   const avisarBackup = useRecordatorioBackup()
   const [sheetGastoAbierto, setSheetGastoAbierto] = useState(false)
   const [gastoEditando, setGastoEditando] = useState<Gasto | null>(null)
@@ -86,14 +88,22 @@ export function Inicio({ onIrAAjustes }: InicioProps) {
         disponible={estado.colchonDisponible}
       />
 
-      <StatTile
-        label="Próximo salario estimado"
-        valor={
-          estado.diasHastaProximoCobro >= 0
-            ? `${estado.diasHastaProximoCobro} días (${formatearFechaEs(estado.fechaProximoCobro)})`
-            : `Estimado el ${formatearFechaEs(estado.fechaProximoCobro)}`
-        }
-      />
+      <div className="flex flex-col gap-2 rounded-2xl bg-neutral-100 p-4 dark:bg-neutral-800">
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-neutral-500 dark:text-neutral-400">Ahorro acumulado</span>
+          <span className="font-semibold text-neutral-900 dark:text-neutral-50">
+            {formatearEuros(hucha?.saldo ?? 0)}
+          </span>
+        </div>
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-neutral-500 dark:text-neutral-400">Próximo salario estimado</span>
+          <span className="font-semibold text-neutral-900 dark:text-neutral-50">
+            {estado.diasHastaProximoCobro >= 0
+              ? `${estado.diasHastaProximoCobro} días (${formatearFechaEs(estado.fechaProximoCobro)})`
+              : `Estimado el ${formatearFechaEs(estado.fechaProximoCobro)}`}
+          </span>
+        </div>
+      </div>
 
       <Button
         className="w-full"
