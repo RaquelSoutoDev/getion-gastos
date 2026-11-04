@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { BottomSheet } from '../../components/ui/BottomSheet'
 import { Button } from '../../components/ui/Button'
 import { ConfirmDialog } from '../../components/ui/ConfirmDialog'
+import { DateField } from '../../components/ui/DateField'
 import { NumberField } from '../../components/ui/NumberField'
 import { SegmentedControl } from '../../components/ui/SegmentedControl'
 import { TextField } from '../../components/ui/TextField'
@@ -73,15 +74,7 @@ export function GastoFormSheet({ onClose, cicloId, gasto }: GastoFormSheetProps)
           placeholder="Ej. Cena con amigos"
         />
 
-        <label className="flex flex-col gap-1">
-          <span className="text-sm font-medium text-neutral-500 dark:text-neutral-400">Fecha</span>
-          <input
-            type="date"
-            value={fecha}
-            onChange={(e) => setFecha(e.target.value)}
-            className="rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-base text-neutral-900 outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-50"
-          />
-        </label>
+        <DateField label="Fecha" value={fecha} onChange={(v) => setFecha(v ?? hoyISO())} />
 
         <Button className="w-full" onClick={guardar} disabled={guardando}>
           {guardando ? 'Guardando…' : 'Guardar'}

@@ -3,6 +3,7 @@ import { CalculoColchonView } from '../../components/CalculoColchonView'
 import { ResumenCierreView } from '../../components/ResumenCierreView'
 import { BottomSheet } from '../../components/ui/BottomSheet'
 import { Button } from '../../components/ui/Button'
+import { DateField } from '../../components/ui/DateField'
 import { NumberField } from '../../components/ui/NumberField'
 import { calcularColchonInicial } from '../../core/colchon'
 import { formatearFechaEs } from '../../core/dates'
@@ -126,15 +127,7 @@ export function RegistrarSalarioFlow({ open, onClose }: RegistrarSalarioFlowProp
             autoFocus
             error={error ?? undefined}
           />
-          <label className="flex flex-col gap-1">
-            <span className="text-sm font-medium text-neutral-500 dark:text-neutral-400">Fecha</span>
-            <input
-              type="date"
-              value={fecha}
-              onChange={(e) => setFecha(e.target.value)}
-              className="rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-base text-neutral-900 outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-50"
-            />
-          </label>
+          <DateField label="Fecha" value={fecha} onChange={(v) => setFecha(v ?? hoyISO())} />
           <Button onClick={continuar} disabled={cargando}>
             {cargando ? 'Calculando…' : 'Continuar'}
           </Button>

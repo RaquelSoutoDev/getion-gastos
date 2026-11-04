@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { BottomSheet } from '../../components/ui/BottomSheet'
 import { Button } from '../../components/ui/Button'
 import { ConfirmDialog } from '../../components/ui/ConfirmDialog'
+import { DateField } from '../../components/ui/DateField'
 import { NumberField } from '../../components/ui/NumberField'
 import { SegmentedControl } from '../../components/ui/SegmentedControl'
 import { TextField } from '../../components/ui/TextField'
@@ -35,7 +36,7 @@ export function PeriodicItemFormSheet({ onClose, item, tipoInicial }: PeriodicIt
   const [nombre, setNombre] = useState(item?.nombre ?? '')
   const [tipo, setTipo] = useState<TipoPeriodico>(item?.tipo ?? tipoInicial)
   const [importeTexto, setImporteTexto] = useState(item ? centimosATexto(item.importeMensual) : '')
-  const [fechaFin, setFechaFin] = useState(item?.fechaFin ?? '')
+  const [fechaFin, setFechaFin] = useState<string | null>(item?.fechaFin ?? null)
   const [error, setError] = useState<string | null>(null)
   const [guardando, setGuardando] = useState(false)
   const [confirmandoBorrado, setConfirmandoBorrado] = useState(false)
@@ -56,7 +57,7 @@ export function PeriodicItemFormSheet({ onClose, item, tipoInicial }: PeriodicIt
       await actualizarPeriodicItem(db, item.id, {
         nombre: nombre.trim(),
         importeMensual: importe,
-        fechaFin: tipo === 'fraccionado' ? fechaFin || null : null,
+        fechaFin: tipo === 'fraccionado' ? fechaFin : null,
       })
     } else {
       await crearPeriodicItem(db, {
@@ -64,7 +65,7 @@ export function PeriodicItemFormSheet({ onClose, item, tipoInicial }: PeriodicIt
         tipo,
         importeMensual: importe,
         fechaInicio: hoyISO(),
-        fechaFin: tipo === 'fraccionado' ? fechaFin || null : null,
+        fechaFin: tipo === 'fraccionado' ? fechaFin : null,
       })
     }
     setGuardando(false)
@@ -111,15 +112,13 @@ export function PeriodicItemFormSheet({ onClose, item, tipoInicial }: PeriodicIt
         <NumberField label={etiquetaImporte} value={importeTexto} onChange={setImporteTexto} error={error ?? undefined} />
 
         {tipo === 'fraccionado' && (
-          <label className="flex flex-col gap-1">
-            <span className="text-sm font-medium text-neutral-500 dark:text-neutral-400">Fecha de fin (opcional)</span>
-            <input
-              type="date"
-              value={fechaFin}
-              onChange={(e) => setFechaFin(e.target.value)}
-              className="rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-base text-neutral-900 outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-50"
-            />
-          </label>
+          <DateField
+            label="Fecha de fin (opcional)"
+            value={fechaFin}
+            onChange={setFechaFin}
+            placeholder="Sin fecha de fin"
+            allowClear
+          />
         )}
 
         <Button className="w-full" onClick={guardar} disabled={guardando}>
