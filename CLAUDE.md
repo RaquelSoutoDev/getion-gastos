@@ -132,3 +132,23 @@ estimado, botón principal "Añadir gasto" (2-3 toques desde aquí) y últimos m
   pantallas.
 - Llamar a `navigator.storage.persist()` al arrancar la app.
 - Sin router externo: navegación por pestañas con estado local.
+
+### Convenciones de `src/db/`
+
+- Cada función de `src/db/repositories/*.ts` recibe la instancia de Dexie (`db: GestionGastoDB`)
+  como primer argumento, en vez de importar un singleton. Así los tests pueden crear una base
+  de datos aislada por test (`new GestionGastoDB(nombreÚnico)`) sin estado compartido. La app
+  real usa el singleton exportado por `src/db/schema.ts`.
+- `registrarSalario` (en `cycles.ts`) es la única función que cierra y abre ciclos; va en una
+  transacción Dexie (`db.transaction('rw', …)`) para que el cierre, el reparto a la hucha y la
+  apertura del nuevo ciclo sean atómicos. `previsualizarCierreCicloActual` calcula el mismo
+  resumen sin persistir nada, para el paso de confirmación antes de registrar el salario.
+- Un ciclo cerrado es de solo lectura: `_guards.ts` expone `asegurarCicloAbierto`, que usan
+  `gastos.ts` y `registrosAproximado.ts` para rechazar ediciones sobre un ciclo ya cerrado.
+- `PeriodicItem` nunca se borra físicamente (soft-delete vía `estado: 'eliminado'`).
+- El backup JSON (`src/db/backup.ts`) tiene un campo `version` explícito; importar reemplaza
+  por completo las tablas del destino (decisión tomada con el usuario). La descarga/lectura de
+  ficheros (DOM) vive aparte en `src/db/backupFile.ts`, sin lógica de negocio.
+- Tests del `db/` usan `fake-indexeddb` en Node; cada test crea su propia instancia de
+  `GestionGastoDB` con un nombre único (`import 'fake-indexeddb/auto'` debe ser el primer
+  import del fichero de test, antes de importar `schema.ts`).
