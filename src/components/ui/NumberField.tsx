@@ -18,6 +18,7 @@ export function NumberField({ label, value, onChange, autoFocus, placeholder = '
           autoFocus={autoFocus}
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          onFocus={(e) => e.target.select()}
           placeholder={placeholder}
           className="w-full bg-transparent text-3xl font-semibold text-neutral-900 outline-none dark:text-neutral-50"
         />

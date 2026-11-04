@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronUp, Plus, Wallet } from 'lucide-react'
+import { Plus, Wallet } from 'lucide-react'
 import { useState } from 'react'
 import { CalculoColchonView } from '../../components/CalculoColchonView'
 import { Screen } from '../../components/layout/Screen'
@@ -22,7 +22,6 @@ export function Inicio({ onIrAAjustes }: InicioProps) {
   const [sheetGastoAbierto, setSheetGastoAbierto] = useState(false)
   const [gastoEditando, setGastoEditando] = useState<Gasto | null>(null)
   const [salarioAbierto, setSalarioAbierto] = useState(false)
-  const [verCalculo, setVerCalculo] = useState(false)
 
   if (estado === undefined) {
     return (
@@ -68,28 +67,18 @@ export function Inicio({ onIrAAjustes }: InicioProps) {
         negativo={estado.colchonDisponible < 0}
       />
 
-      <button
-        type="button"
-        onClick={() => setVerCalculo((v) => !v)}
-        className="flex items-center justify-center gap-1 text-sm font-medium text-blue-600 dark:text-blue-400"
-      >
-        {verCalculo ? 'Ocultar cálculo' : 'Ver cálculo'}
-        {verCalculo ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-      </button>
-      {verCalculo && (
-        <CalculoColchonView
-          salarioImporte={estado.cycle.salarioImporte}
-          totalFijos={estado.totalFijos}
-          totalFraccionados={estado.totalFraccionados}
-          totalAproximado={estado.totalAproximado}
-          totalAhorroProgramado={estado.totalAhorroProgramado}
-          presupuestoComida={estado.comidaInicial}
-          deficitArrastrado={estado.cycle.deficitArrastrado}
-          colchonInicial={estado.colchonInicial}
-          gastosRegistrados={estado.colchonInicial - estado.colchonDisponible}
-          disponible={estado.colchonDisponible}
-        />
-      )}
+      <CalculoColchonView
+        salarioImporte={estado.cycle.salarioImporte}
+        totalFijos={estado.totalFijos}
+        totalFraccionados={estado.totalFraccionados}
+        totalAproximado={estado.totalAproximado}
+        totalAhorroProgramado={estado.totalAhorroProgramado}
+        presupuestoComida={estado.comidaInicial}
+        deficitArrastrado={estado.cycle.deficitArrastrado}
+        colchonInicial={estado.colchonInicial}
+        gastosRegistrados={estado.colchonInicial - estado.colchonDisponible}
+        disponible={estado.colchonDisponible}
+      />
 
       <StatTile
         label="Comida disponible"
