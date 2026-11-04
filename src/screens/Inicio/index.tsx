@@ -134,6 +134,7 @@ export function Inicio({ onIrAAjustes }: InicioProps) {
           <ul className="flex flex-col gap-2">
             {ultimosMovimientos.map((gasto) => {
               const esComida = gasto.bolsa === 'comida'
+              const esIngreso = gasto.importe < 0
               return (
                 <li key={gasto.id}>
                   <button
@@ -154,8 +155,11 @@ export function Inicio({ onIrAAjustes }: InicioProps) {
                       </span>
                       <span className="text-xs text-neutral-400">{formatearFechaEs(gasto.fecha)}</span>
                     </span>
-                    <span className="font-semibold text-neutral-900 dark:text-neutral-50">
-                      {formatearEuros(gasto.importe)}
+                    <span
+                      className={`font-semibold ${esIngreso ? 'text-green-600 dark:text-green-400' : 'text-neutral-900 dark:text-neutral-50'}`}
+                    >
+                      {esIngreso ? '+' : ''}
+                      {formatearEuros(Math.abs(gasto.importe))}
                     </span>
                   </button>
                 </li>
