@@ -1,0 +1,104 @@
+{
+  "version": 1,
+  "exportadoEn": "2026-11-04T12:00:00.000Z",
+  "settings": {
+    "presupuestoComidaMensual": 25000,
+    "diaCobroHabitual": 5,
+    "ultimaExportacion": null
+  },
+  "periodicItems": [
+    {
+      "id": "alquiler",
+      "nombre": "Alquiler",
+      "tipo": "fijo",
+      "importeMensual": 55000,
+      "fechaInicio": "2026-01-01",
+      "fechaFin": null,
+      "estado": "activo"
+    },
+    {
+      "id": "ordenador",
+      "nombre": "Ordenador portátil",
+      "tipo": "fraccionado",
+      "importeMensual": 6500,
+      "fechaInicio": "2026-06-01",
+      "fechaFin": "2027-05-31",
+      "estado": "activo"
+    },
+    {
+      "id": "luz",
+      "nombre": "Luz",
+      "tipo": "aproximado",
+      "importeMensual": 4500,
+      "fechaInicio": "2026-01-01",
+      "fechaFin": null,
+      "estado": "activo"
+    },
+    {
+      "id": "ahorro-mensual",
+      "nombre": "Ahorro mensual",
+      "tipo": "ahorro",
+      "importeMensual": 15000,
+      "fechaInicio": "2026-01-01",
+      "fechaFin": null,
+      "estado": "activo"
+    }
+  ],
+  "cycles": [
+    {
+      "id": "ciclo-1",
+      "numero": 1,
+      "fechaInicio": "2026-09-05",
+      "fechaFin": "2026-10-05",
+      "salarioImporte": 160000,
+      "estado": "cerrado",
+      "deficitArrastrado": 0,
+      "resumenCierre": {
+        "colchonInicial": 53300,
+        "comidaInicial": 25000,
+        "totalFijos": 55000,
+        "totalFraccionados": 6500,
+        "totalAhorroProgramado": 15000,
+        "aproximados": [
+          { "periodicItemId": "luz", "nombre": "Luz", "presupuesto": 4500, "real": 5200, "diferencia": 700 }
+        ],
+        "gastosComidaTotal": 6300,
+        "gastosColchonTotal": 25000,
+        "sobranteComida": 18700,
+        "sobranteColchon": 28300,
+        "deficitDetectado": { "comida": 0, "colchon": 0 },
+        "aportacionHuchaSobrante": 47000,
+        "deficitArrastrado": 0
+      }
+    },
+    {
+      "id": "ciclo-2",
+      "numero": 2,
+      "fechaInicio": "2026-10-05",
+      "fechaFin": null,
+      "salarioImporte": 160000,
+      "estado": "abierto",
+      "deficitArrastrado": 0,
+      "resumenCierre": null
+    }
+  ],
+  "gastos": [
+    { "id": "g1", "cicloId": "ciclo-1", "bolsa": "comida", "importe": 3500, "concepto": "Mercado", "fecha": "2026-09-10" },
+    { "id": "g2", "cicloId": "ciclo-1", "bolsa": "comida", "importe": 2800, "concepto": "Cena fuera", "fecha": "2026-09-20" },
+    { "id": "g3", "cicloId": "ciclo-1", "bolsa": "colchon", "importe": 12000, "concepto": "Ropa", "fecha": "2026-09-12" },
+    { "id": "g4", "cicloId": "ciclo-1", "bolsa": "colchon", "importe": 8000, "concepto": "Regalo cumpleaños", "fecha": "2026-09-18" },
+    { "id": "g5", "cicloId": "ciclo-1", "bolsa": "colchon", "importe": 5000, "concepto": "Cine y cena", "fecha": "2026-09-25" },
+    { "id": "g6", "cicloId": "ciclo-2", "bolsa": "comida", "importe": 4200, "concepto": "Supermercado", "fecha": "2026-11-02" },
+    { "id": "g7", "cicloId": "ciclo-2", "bolsa": "colchon", "importe": 9000, "concepto": "Cena con amigos", "fecha": "2026-11-01" },
+    { "id": "g8", "cicloId": "ciclo-2", "bolsa": "colchon", "importe": 3000, "concepto": "Parking", "fecha": "2026-11-03" }
+  ],
+  "registrosAproximado": [
+    { "id": "reg-1", "cicloId": "ciclo-1", "periodicItemId": "luz", "importeReal": 5200 }
+  ],
+  "huchaMovimientos": [
+    { "id": "hm-1", "fecha": "2026-09-05", "importe": 15000, "origen": "ahorro_programado", "concepto": "Ahorro programado - Ciclo 1", "cicloId": "ciclo-1" },
+    { "id": "hm-2", "fecha": "2026-10-05", "importe": 47000, "origen": "sobrante_ciclo", "concepto": "Sobrante del ciclo 1", "cicloId": "ciclo-1" },
+    { "id": "hm-3", "fecha": "2026-10-05", "importe": 15000, "origen": "ahorro_programado", "concepto": "Ahorro programado - Ciclo 2", "cicloId": "ciclo-2" },
+    { "id": "hm-4", "fecha": "2026-10-20", "importe": 5000, "origen": "manual", "concepto": "Paga extra", "cicloId": null }
+  ]
+}

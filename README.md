@@ -1,5 +1,7 @@
 # Gestión de Gastos
 
+[![CI](https://github.com/RaquelSoutoDev/getion-gastos/actions/workflows/ci.yml/badge.svg)](https://github.com/RaquelSoutoDev/getion-gastos/actions/workflows/ci.yml)
+
 PWA de finanzas personales para uso propio en iPhone, instalada desde Safari con
 "Añadir a pantalla de inicio". **Sin backend**: todos los datos se guardan únicamente en el
 dispositivo (IndexedDB) y la app funciona sin conexión.
@@ -50,6 +52,20 @@ Toda la lógica de cálculo (colchón, vigencia de gastos periódicos, cierre de
 de déficit) vive en `src/core/` como funciones puras, sin ninguna dependencia de Dexie ni de
 React, con tests de Vitest cubriendo los casos límite.
 
+## Probar la app rápido, con datos de ejemplo
+
+[`examples/datos-demo.json`](./examples/datos-demo.json) es un backup de ejemplo (gastos
+periódicos de los 4 tipos, un ciclo cerrado y uno abierto, gastos, hucha con movimientos
+automáticos y manuales) para ver la app ya poblada sin tener que crear nada a mano:
+
+1. Abre la app → **Ajustes → Importar desde un archivo JSON**.
+2. Selecciona `examples/datos-demo.json`.
+3. Confirma el reemplazo (recuerda: importar sustituye todos los datos del dispositivo).
+
+Hay un test (`examples/datos-demo.test.ts`) que comprueba que ese JSON es válido y que sus
+cifras cuadran con la lógica real de `core/`, para que no se desincronice si cambia el
+modelo de datos.
+
 ## Desarrollo
 
 ```bash
@@ -82,6 +98,14 @@ src/
   screens/     las 5 pantallas de la app
   app/         App.tsx, main.tsx, navegación por pestañas
 ```
+
+## Calidad y mantenimiento
+
+- **CI** ([`.github/workflows/ci.yml`](./.github/workflows/ci.yml)): en cada push y pull
+  request a `main` corre lint, type-check estricto, tests y build de producción.
+- **Dependabot** ([`.github/dependabot.yml`](./.github/dependabot.yml)): revisa cada semana
+  si hay actualizaciones de dependencias (npm) y de las propias GitHub Actions, y abre un PR
+  por cada una.
 
 ## Privacidad
 
