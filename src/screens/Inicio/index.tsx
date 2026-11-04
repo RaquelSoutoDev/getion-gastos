@@ -60,12 +60,18 @@ export function Inicio({ onIrAAjustes }: InicioProps) {
         </button>
       )}
 
-      <StatTile
-        label="Colchón disponible"
-        valor={formatearEuros(estado.colchonDisponible)}
-        tono="grande"
-        negativo={estado.colchonDisponible < 0}
-      />
+      <div className="grid grid-cols-2 gap-3">
+        <StatTile
+          label="Colchón disponible"
+          valor={formatearEuros(estado.colchonDisponible)}
+          negativo={estado.colchonDisponible < 0}
+        />
+        <StatTile
+          label="Comida disponible"
+          valor={formatearEuros(estado.comidaDisponible)}
+          negativo={estado.comidaDisponible < 0}
+        />
+      </div>
 
       <CalculoColchonView
         salarioImporte={estado.cycle.salarioImporte}
@@ -80,11 +86,6 @@ export function Inicio({ onIrAAjustes }: InicioProps) {
         disponible={estado.colchonDisponible}
       />
 
-      <StatTile
-        label="Comida disponible"
-        valor={formatearEuros(estado.comidaDisponible)}
-        negativo={estado.comidaDisponible < 0}
-      />
       <StatTile
         label="Próximo salario estimado"
         valor={
