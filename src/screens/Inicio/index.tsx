@@ -1,8 +1,10 @@
-import { Plus, Wallet } from 'lucide-react'
+import { Plus, UtensilsCrossed, Wallet } from 'lucide-react'
 import { useState } from 'react'
+import { AhorroAcumuladoCard } from '../../components/AhorroAcumuladoCard'
 import { CalculoColchonView } from '../../components/CalculoColchonView'
 import { Screen } from '../../components/layout/Screen'
 import { Button } from '../../components/ui/Button'
+import { Disclosure } from '../../components/ui/Disclosure'
 import { StatTile } from '../../components/ui/StatTile'
 import { formatearFechaEs } from '../../core/dates'
 import { formatearEuros } from '../../core/money'
@@ -66,44 +68,20 @@ export function Inicio({ onIrAAjustes }: InicioProps) {
         <StatTile
           label="Colchón disponible"
           valor={formatearEuros(estado.colchonDisponible)}
+          icon={Wallet}
+          acento="blue"
           negativo={estado.colchonDisponible < 0}
         />
         <StatTile
           label="Comida disponible"
           valor={formatearEuros(estado.comidaDisponible)}
+          icon={UtensilsCrossed}
+          acento="amber"
           negativo={estado.comidaDisponible < 0}
         />
       </div>
 
-      <CalculoColchonView
-        salarioImporte={estado.cycle.salarioImporte}
-        totalFijos={estado.totalFijos}
-        totalFraccionados={estado.totalFraccionados}
-        totalAproximado={estado.totalAproximado}
-        totalAhorroProgramado={estado.totalAhorroProgramado}
-        presupuestoComida={estado.comidaInicial}
-        deficitArrastrado={estado.cycle.deficitArrastrado}
-        colchonInicial={estado.colchonInicial}
-        gastosRegistrados={estado.colchonInicial - estado.colchonDisponible}
-        disponible={estado.colchonDisponible}
-      />
-
-      <div className="flex flex-col gap-2 rounded-2xl bg-neutral-100 p-4 dark:bg-neutral-800">
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-neutral-500 dark:text-neutral-400">Ahorro acumulado</span>
-          <span className="font-semibold text-neutral-900 dark:text-neutral-50">
-            {formatearEuros(hucha?.saldo ?? 0)}
-          </span>
-        </div>
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-neutral-500 dark:text-neutral-400">Próximo salario estimado</span>
-          <span className="font-semibold text-neutral-900 dark:text-neutral-50">
-            {estado.diasHastaProximoCobro >= 0
-              ? `${estado.diasHastaProximoCobro} días (${formatearFechaEs(estado.fechaProximoCobro)})`
-              : `Estimado el ${formatearFechaEs(estado.fechaProximoCobro)}`}
-          </span>
-        </div>
-      </div>
+      <AhorroAcumuladoCard saldo={hucha?.saldo ?? 0} />
 
       <Button
         className="w-full"
@@ -114,6 +92,31 @@ export function Inicio({ onIrAAjustes }: InicioProps) {
       >
         <Plus size={20} /> Añadir gasto
       </Button>
+
+      <Disclosure label="Ver desglose del cálculo" labelAbierto="Ocultar desglose">
+        <div className="flex flex-col gap-3">
+          <CalculoColchonView
+            salarioImporte={estado.cycle.salarioImporte}
+            totalFijos={estado.totalFijos}
+            totalFraccionados={estado.totalFraccionados}
+            totalAproximado={estado.totalAproximado}
+            totalAhorroProgramado={estado.totalAhorroProgramado}
+            presupuestoComida={estado.comidaInicial}
+            deficitArrastrado={estado.cycle.deficitArrastrado}
+            colchonInicial={estado.colchonInicial}
+            gastosRegistrados={estado.colchonInicial - estado.colchonDisponible}
+            disponible={estado.colchonDisponible}
+          />
+          <div className="flex items-center justify-between rounded-2xl bg-neutral-100 px-4 py-3 text-sm dark:bg-neutral-800">
+            <span className="text-neutral-500 dark:text-neutral-400">Próximo salario estimado</span>
+            <span className="font-semibold text-neutral-900 dark:text-neutral-50">
+              {estado.diasHastaProximoCobro >= 0
+                ? `${estado.diasHastaProximoCobro} días (${formatearFechaEs(estado.fechaProximoCobro)})`
+                : `Estimado el ${formatearFechaEs(estado.fechaProximoCobro)}`}
+            </span>
+          </div>
+        </div>
+      </Disclosure>
 
       <button
         type="button"
@@ -129,30 +132,35 @@ export function Inicio({ onIrAAjustes }: InicioProps) {
           <p className="text-sm text-neutral-400">Todavía no hay gastos en este ciclo.</p>
         ) : (
           <ul className="flex flex-col gap-2">
-            {ultimosMovimientos.map((gasto) => (
-              <li key={gasto.id}>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setGastoEditando(gasto)
-                    setSheetGastoAbierto(true)
-                  }}
-                  className="flex w-full items-center justify-between rounded-2xl bg-white p-3 text-left dark:bg-neutral-900"
-                >
-                  <span className="flex flex-col">
-                    <span className="text-sm font-medium text-neutral-900 dark:text-neutral-50">
-                      {gasto.concepto || (gasto.bolsa === 'comida' ? 'Comida' : 'Colchón')}
+            {ultimosMovimientos.map((gasto) => {
+              const esComida = gasto.bolsa === 'comida'
+              return (
+                <li key={gasto.id}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setGastoEditando(gasto)
+                      setSheetGastoAbierto(true)
+                    }}
+                    className="flex w-full items-center gap-3 rounded-2xl bg-white p-3 text-left shadow-sm ring-1 ring-black/5 dark:bg-neutral-900 dark:ring-white/5"
+                  >
+                    <span
+                      className={`h-2 w-2 shrink-0 rounded-full ${esComida ? 'bg-amber-500' : 'bg-blue-500'}`}
+                      aria-hidden
+                    />
+                    <span className="flex flex-1 flex-col">
+                      <span className="text-sm font-medium text-neutral-900 dark:text-neutral-50">
+                        {gasto.concepto || (esComida ? 'Comida' : 'Colchón')}
+                      </span>
+                      <span className="text-xs text-neutral-400">{formatearFechaEs(gasto.fecha)}</span>
                     </span>
-                    <span className="text-xs text-neutral-400">
-                      {formatearFechaEs(gasto.fecha)} · {gasto.bolsa === 'comida' ? 'Comida' : 'Colchón'}
+                    <span className="font-semibold text-neutral-900 dark:text-neutral-50">
+                      {formatearEuros(gasto.importe)}
                     </span>
-                  </span>
-                  <span className="font-semibold text-neutral-900 dark:text-neutral-50">
-                    {formatearEuros(gasto.importe)}
-                  </span>
-                </button>
-              </li>
-            ))}
+                  </button>
+                </li>
+              )
+            })}
           </ul>
         )}
       </section>

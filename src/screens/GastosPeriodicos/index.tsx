@@ -92,7 +92,7 @@ export function GastosPeriodicos() {
                   return (
                     <li
                       key={item.id}
-                      className="rounded-2xl bg-white p-3 dark:bg-neutral-900"
+                      className="rounded-2xl bg-white p-3 shadow-sm ring-1 ring-black/5 dark:bg-neutral-900 dark:ring-white/5"
                     >
                       <button
                         type="button"

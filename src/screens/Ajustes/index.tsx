@@ -81,7 +81,7 @@ export function Ajustes() {
 
   return (
     <Screen title="Ajustes">
-      <section className="flex flex-col gap-4 rounded-2xl bg-white p-4 dark:bg-neutral-900">
+      <section className="flex flex-col gap-4 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/5 dark:bg-neutral-900 dark:ring-white/5">
         <h2 className="text-sm font-semibold text-neutral-500 dark:text-neutral-400">General</h2>
         <NumberField
           label="Presupuesto de comida (mensual)"
@@ -108,7 +108,7 @@ export function Ajustes() {
         </Button>
       </section>
 
-      <section className="flex flex-col gap-3 rounded-2xl bg-white p-4 dark:bg-neutral-900">
+      <section className="flex flex-col gap-3 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/5 dark:bg-neutral-900 dark:ring-white/5">
         <h2 className="text-sm font-semibold text-neutral-500 dark:text-neutral-400">Copia de seguridad</h2>
         {settings?.ultimaExportacion && (
           <p className="text-sm text-neutral-400">Última exportación: {settings.ultimaExportacion}</p>
@@ -132,7 +132,7 @@ export function Ajustes() {
         {errorImportar && <p className="text-sm text-red-600 dark:text-red-400">{errorImportar}</p>}
       </section>
 
-      <section className="flex flex-col gap-3 rounded-2xl bg-white p-4 dark:bg-neutral-900">
+      <section className="flex flex-col gap-3 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/5 dark:bg-neutral-900 dark:ring-white/5">
         <h2 className="text-sm font-semibold text-neutral-500 dark:text-neutral-400">Zona de peligro</h2>
         <Button variante="danger" onClick={() => setPasoBorrado(1)}>
           Borrar todos los datos

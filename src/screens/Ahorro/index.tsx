@@ -1,8 +1,8 @@
 import { Plus } from 'lucide-react'
 import { useState } from 'react'
+import { AhorroAcumuladoCard } from '../../components/AhorroAcumuladoCard'
 import { Screen } from '../../components/layout/Screen'
 import { Button } from '../../components/ui/Button'
-import { StatTile } from '../../components/ui/StatTile'
 import { formatearFechaEs } from '../../core/dates'
 import { formatearEuros } from '../../core/money'
 import type { OrigenHucha } from '../../core/types'
@@ -28,7 +28,7 @@ export function Ahorro() {
         </Button>
       }
     >
-      <StatTile label="Saldo de la hucha" valor={formatearEuros(hucha?.saldo ?? 0)} tono="grande" />
+      <AhorroAcumuladoCard saldo={hucha?.saldo ?? 0} />
 
       <section className="flex flex-col gap-2">
         <h2 className="text-sm font-semibold text-neutral-500 dark:text-neutral-400">Historial de aportaciones</h2>
@@ -41,7 +41,7 @@ export function Ahorro() {
               return (
                 <li
                   key={m.id}
-                  className="flex items-center justify-between rounded-2xl bg-white p-3 dark:bg-neutral-900"
+                  className="flex items-center justify-between rounded-2xl bg-white p-3 shadow-sm ring-1 ring-black/5 dark:bg-neutral-900 dark:ring-white/5"
                 >
                   <span className="flex flex-col">
                     <span className="text-sm font-medium text-neutral-900 dark:text-neutral-50">

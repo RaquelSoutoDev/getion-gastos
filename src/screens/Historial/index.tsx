@@ -23,7 +23,7 @@ export function Historial() {
                 <button
                   type="button"
                   onClick={() => setCicloSeleccionado(ciclo)}
-                  className="flex w-full flex-col gap-1 rounded-2xl bg-white p-4 text-left dark:bg-neutral-900"
+                  className="flex w-full flex-col gap-1 rounded-2xl bg-white p-4 text-left shadow-sm ring-1 ring-black/5 dark:bg-neutral-900 dark:ring-white/5"
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-semibold text-neutral-900 dark:text-neutral-50">Ciclo Nº {ciclo.numero}</span>
