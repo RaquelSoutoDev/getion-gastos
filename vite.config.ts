@@ -11,6 +11,9 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
+      // El registro lo hace a mano src/db/pwaUpdate.ts, para poder forzar
+      // comprobaciones activas de versión nueva (ver comentario allí).
+      injectRegister: false,
       includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
       manifest: {
         name: 'Gestión de Gastos',
