@@ -1,10 +1,23 @@
+import { useState } from 'react'
+import { BottomNav, type Tab } from '../components/layout/BottomNav'
+import { Ahorro } from '../screens/Ahorro'
+import { Ajustes } from '../screens/Ajustes'
+import { GastosPeriodicos } from '../screens/GastosPeriodicos'
+import { Historial } from '../screens/Historial'
+import { Inicio } from '../screens/Inicio'
+
 function App() {
+  const [tab, setTab] = useState<Tab>('inicio')
+
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-neutral-50 p-6 text-center dark:bg-neutral-900">
-      <p className="text-lg font-medium text-neutral-500 dark:text-neutral-400">
-        Gestión de Gastos — Fase 0 completada. Pantallas llegan en la Fase 3.
-      </p>
-    </div>
+    <>
+      {tab === 'inicio' && <Inicio onIrAAjustes={() => setTab('ajustes')} />}
+      {tab === 'periodicos' && <GastosPeriodicos />}
+      {tab === 'ahorro' && <Ahorro />}
+      {tab === 'historial' && <Historial />}
+      {tab === 'ajustes' && <Ajustes />}
+      <BottomNav active={tab} onChange={setTab} />
+    </>
   )
 }
 

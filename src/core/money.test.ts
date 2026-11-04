@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatearEuros, parsearImporte } from './money'
+import { centimosATexto, formatearEuros, parsearImporte } from './money'
 
 describe('formatearEuros', () => {
   it('formatea céntimos a euros con coma decimal y símbolo €', () => {
@@ -58,5 +58,24 @@ describe('parsearImporte', () => {
 
   it('rechaza más de dos decimales', () => {
     expect(parsearImporte('12,505')).toBeNull()
+  })
+})
+
+describe('centimosATexto', () => {
+  it('formatea con coma decimal y sin símbolo', () => {
+    expect(centimosATexto(1250)).toBe('12,50')
+    expect(centimosATexto(0)).toBe('0,00')
+  })
+
+  it('no agrupa los miles', () => {
+    expect(centimosATexto(1234567)).toBe('12345,67')
+  })
+
+  it('formatea negativos con el signo delante', () => {
+    expect(centimosATexto(-1250)).toBe('-12,50')
+  })
+
+  it('es el inverso de parsearImporte para importes ya redondeados', () => {
+    expect(parsearImporte(centimosATexto(123456))).toBe(123456)
   })
 })

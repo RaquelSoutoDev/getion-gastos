@@ -25,3 +25,12 @@ export function parsearImporte(texto: string): Centimos | null {
 
   return Math.round(Number(normalizado) * 100)
 }
+
+/** Texto editable sin símbolo de moneda ni separador de miles, ej. "1234,56". Para prerrellenar formularios. */
+export function centimosATexto(centimos: Centimos): string {
+  const negativo = centimos < 0
+  const absolutos = Math.abs(centimos)
+  const euros = Math.floor(absolutos / 100)
+  const resto = String(absolutos % 100).padStart(2, '0')
+  return `${negativo ? '-' : ''}${euros},${resto}`
+}
