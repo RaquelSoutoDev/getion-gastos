@@ -1,5 +1,6 @@
 import { X } from 'lucide-react'
 import { type ReactNode, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 
 interface BottomSheetProps {
   open: boolean
@@ -20,11 +21,11 @@ export function BottomSheet({ open, onClose, title, children }: BottomSheetProps
 
   if (!open) return null
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-end justify-center">
       <button type="button" aria-label="Cerrar" className="absolute inset-0 bg-black/40" onClick={onClose} />
-      <div className="relative z-10 w-full max-w-md rounded-t-3xl bg-white p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] shadow-xl dark:bg-neutral-900">
-        <div className="mb-4 flex items-center justify-between">
+      <div className="relative z-10 flex max-h-[85dvh] w-full max-w-md flex-col rounded-t-3xl bg-white shadow-xl dark:bg-neutral-900">
+        <div className="flex items-center justify-between px-5 pt-5 pb-4">
           <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-50">{title}</h2>
           <button
             type="button"
@@ -35,8 +36,9 @@ export function BottomSheet({ open, onClose, title, children }: BottomSheetProps
             <X size={20} />
           </button>
         </div>
-        {children}
+        <div className="overflow-y-auto px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))]">{children}</div>
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }

@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import { Button } from './Button'
 
 interface ConfirmDialogProps {
@@ -28,10 +29,10 @@ export function ConfirmDialog({
 }: ConfirmDialogProps) {
   if (!open) return null
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <button type="button" aria-label="Cerrar" className="absolute inset-0 bg-black/40" onClick={onCancel} />
-      <div className="relative z-10 w-full max-w-sm rounded-3xl bg-white p-5 shadow-xl dark:bg-neutral-900">
+      <div className="relative z-10 max-h-[85dvh] w-full max-w-sm overflow-y-auto rounded-3xl bg-white p-5 shadow-xl dark:bg-neutral-900">
         <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-50">{title}</h2>
         {description && <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">{description}</p>}
         {children && <div className="mt-3">{children}</div>}
@@ -44,6 +45,7 @@ export function ConfirmDialog({
           </Button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }

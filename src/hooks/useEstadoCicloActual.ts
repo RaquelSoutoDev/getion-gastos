@@ -25,6 +25,7 @@ export interface EstadoCicloActual {
   totalFijos: number
   totalFraccionados: number
   totalAhorroProgramado: number
+  totalAproximado: number
   aproximados: DetalleAproximado[]
   fechaProximoCobro: string
   diasHastaProximoCobro: number
@@ -78,6 +79,7 @@ export function useEstadoCicloActual(): EstadoCicloActual | null | undefined {
       totalFijos: fijos,
       totalFraccionados: fraccionados,
       totalAhorroProgramado: ahorro,
+      totalAproximado: aproximadoEnVivo,
       aproximados,
       fechaProximoCobro: fechaCobro,
       diasHastaProximoCobro: diasHasta(fechaCobro, hoyISO()),

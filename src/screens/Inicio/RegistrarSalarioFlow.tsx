@@ -1,13 +1,23 @@
 import { useState } from 'react'
+import { CalculoColchonView } from '../../components/CalculoColchonView'
 import { ResumenCierreView } from '../../components/ResumenCierreView'
 import { BottomSheet } from '../../components/ui/BottomSheet'
 import { Button } from '../../components/ui/Button'
 import { NumberField } from '../../components/ui/NumberField'
+import { calcularColchonInicial } from '../../core/colchon'
 import { formatearFechaEs } from '../../core/dates'
 import { formatearEuros, parsearImporte } from '../../core/money'
+import {
+  resolverAproximados,
+  totalAhorroProgramado,
+  totalAproximadoEnVivo,
+  totalFijos,
+  totalFraccionadosVigentes,
+} from '../../core/periodicItems'
 import type { ResumenCierre } from '../../core/types'
 import { db } from '../../db/schema'
 import { previsualizarCierreCicloActual, registrarSalario } from '../../db/repositories/cycles'
+import { obtenerSettings } from '../../db/repositories/settings'
 import { hoyISO } from '../../lib/hoy'
 
 interface RegistrarSalarioFlowProps {
@@ -15,11 +25,22 @@ interface RegistrarSalarioFlowProps {
   onClose: () => void
 }
 
+interface CalculoNuevoCiclo {
+  totalFijos: number
+  totalFraccionados: number
+  totalAproximado: number
+  totalAhorroProgramado: number
+  presupuestoComida: number
+  deficitArrastrado: number
+  colchonInicial: number
+}
+
 export function RegistrarSalarioFlow({ open, onClose }: RegistrarSalarioFlowProps) {
   const [paso, setPaso] = useState<'formulario' | 'confirmar'>('formulario')
   const [importeTexto, setImporteTexto] = useState('')
   const [fecha, setFecha] = useState(hoyISO())
   const [resumen, setResumen] = useState<ResumenCierre | null>(null)
+  const [calculoNuevo, setCalculoNuevo] = useState<CalculoNuevoCiclo | null>(null)
   const [cargando, setCargando] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -28,6 +49,7 @@ export function RegistrarSalarioFlow({ open, onClose }: RegistrarSalarioFlowProp
     setImporteTexto('')
     setFecha(hoyISO())
     setResumen(null)
+    setCalculoNuevo(null)
     setError(null)
     onClose()
   }
@@ -40,9 +62,41 @@ export function RegistrarSalarioFlow({ open, onClose }: RegistrarSalarioFlowProp
     }
     setError(null)
     setCargando(true)
-    const previo = await previsualizarCierreCicloActual(db)
-    setCargando(false)
+
+    const [previo, periodicItems, settings] = await Promise.all([
+      previsualizarCierreCicloActual(db),
+      db.periodicItems.toArray(),
+      obtenerSettings(db),
+    ])
+
+    const deficitArrastrado = previo?.deficitArrastrado ?? 0
+    const fijos = totalFijos(periodicItems)
+    const fraccionados = totalFraccionadosVigentes(periodicItems, fecha)
+    const ahorro = totalAhorroProgramado(periodicItems)
+    // Un ciclo nuevo todavía no tiene registros de "aproximado": siempre cuenta el presupuesto.
+    const aproximadoTotal = totalAproximadoEnVivo(resolverAproximados(periodicItems, [], 'nuevo'))
+
+    const colchonInicial = calcularColchonInicial({
+      salarioImporte: importe,
+      totalFijos: fijos,
+      totalFraccionados: fraccionados,
+      totalAproximado: aproximadoTotal,
+      totalAhorroProgramado: ahorro,
+      presupuestoComida: settings.presupuestoComidaMensual,
+      deficitArrastrado,
+    })
+
     setResumen(previo)
+    setCalculoNuevo({
+      totalFijos: fijos,
+      totalFraccionados: fraccionados,
+      totalAproximado: aproximadoTotal,
+      totalAhorroProgramado: ahorro,
+      presupuestoComida: settings.presupuestoComidaMensual,
+      deficitArrastrado,
+      colchonInicial,
+    })
+    setCargando(false)
     setPaso('confirmar')
   }
 
@@ -54,6 +108,8 @@ export function RegistrarSalarioFlow({ open, onClose }: RegistrarSalarioFlowProp
     setCargando(false)
     cerrarYResetear()
   }
+
+  const importeSalario = parsearImporte(importeTexto) ?? 0
 
   return (
     <BottomSheet
@@ -85,7 +141,7 @@ export function RegistrarSalarioFlow({ open, onClose }: RegistrarSalarioFlowProp
         </div>
       ) : (
         <div className="flex flex-col gap-4">
-          {resumen ? (
+          {resumen && (
             <>
               <p className="text-sm text-neutral-500 dark:text-neutral-400">
                 Así queda el ciclo actual antes de cerrarlo. Lo que sobre pasa a la hucha; si alguna bolsa quedó en
@@ -93,15 +149,25 @@ export function RegistrarSalarioFlow({ open, onClose }: RegistrarSalarioFlowProp
               </p>
               <ResumenCierreView resumen={resumen} />
             </>
-          ) : (
-            <p className="text-sm text-neutral-500 dark:text-neutral-400">
-              Es tu primer ciclo: todavía no hay nada que cerrar.
-            </p>
           )}
-          <p className="text-base font-medium text-neutral-900 dark:text-neutral-50">
-            Nuevo ciclo con salario de {formatearEuros(parsearImporte(importeTexto) ?? 0)} desde el{' '}
-            {formatearFechaEs(fecha)}.
+
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">
+            Así queda el colchón del ciclo nuevo, con salario de {formatearEuros(importeSalario)} desde el{' '}
+            {formatearFechaEs(fecha)}:
           </p>
+          {calculoNuevo && (
+            <CalculoColchonView
+              salarioImporte={importeSalario}
+              totalFijos={calculoNuevo.totalFijos}
+              totalFraccionados={calculoNuevo.totalFraccionados}
+              totalAproximado={calculoNuevo.totalAproximado}
+              totalAhorroProgramado={calculoNuevo.totalAhorroProgramado}
+              presupuestoComida={calculoNuevo.presupuestoComida}
+              deficitArrastrado={calculoNuevo.deficitArrastrado}
+              colchonInicial={calculoNuevo.colchonInicial}
+            />
+          )}
+
           <div className="flex gap-3">
             <Button variante="secondary" className="flex-1" onClick={() => setPaso('formulario')}>
               Atrás
