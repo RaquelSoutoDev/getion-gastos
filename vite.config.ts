@@ -9,10 +9,29 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
-    // Configuración completa (manifest, iconos, estrategia de caché offline) en la Fase 4.
     VitePWA({
       registerType: 'autoUpdate',
-      manifest: false,
+      includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
+      manifest: {
+        name: 'Gestión de Gastos',
+        short_name: 'Gastos',
+        description: 'Finanzas personales por ciclos de salario, sin conexión y con los datos solo en el dispositivo.',
+        lang: 'es',
+        theme_color: '#2563eb',
+        background_color: '#fafafa',
+        display: 'standalone',
+        orientation: 'portrait',
+        start_url: '/',
+        scope: '/',
+        icons: [
+          { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+          { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          { src: 'icons/icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+        ],
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,svg,png,ico,webmanifest}'],
+      },
     }),
   ],
   test: {

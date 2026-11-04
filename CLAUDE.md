@@ -152,3 +152,17 @@ estimado, botón principal "Añadir gasto" (2-3 toques desde aquí) y últimos m
 - Tests del `db/` usan `fake-indexeddb` en Node; cada test crea su propia instancia de
   `GestionGastoDB` con un nombre único (`import 'fake-indexeddb/auto'` debe ser el primer
   import del fichero de test, antes de importar `schema.ts`).
+
+### PWA
+
+- Manifest e iconos configurados en `vite.config.ts` (plugin `VitePWA`, `registerType:
+  'autoUpdate'`, `mode: 'generateSW'`). Los iconos (`public/icons/*.png`,
+  `public/apple-touch-icon.png`, `public/favicon.svg`) se generaron una vez con `sharp` a
+  partir de dos SVG maestros (uno "any", otro "maskable" con más margen para la zona segura);
+  `sharp` no es una dependencia del proyecto, solo se usó puntualmente para rasterizar.
+- El modo offline solo puede verificarse de verdad sirviendo el build de producción
+  (`npm run build && npm run preview`), nunca con `npm run dev` — el service worker no se
+  activa en modo desarrollo.
+- `theme-color` e `html { background-color }` en `index.css` usan los mismos tonos que
+  `bg-neutral-50`/`bg-neutral-950` de Tailwind, para que no haya parpadeo de color en el
+  rebote de scroll de iOS.

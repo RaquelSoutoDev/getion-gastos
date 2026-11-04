@@ -1,1 +1,12 @@
 @import "tailwindcss";
+
+/* Evita el flash blanco en el rebote de scroll de iOS cuando el sistema está en modo oscuro. */
+html {
+  background-color: #fafafa;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    background-color: #0a0a0a;
+  }
+}
